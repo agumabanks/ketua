@@ -1,0 +1,29 @@
+# Dependencies
+/node_modules
+/.dart_tool
+/.flutter-plugins-dependencies
+
+# Build output
+/build
+/dist
+
+# Environment and secrets
+.env
+googleCredentials.json
+
+# Large files
+*.zip
+*.db
+*.sql
+
+# IDE and OS
+.DS_Store
+/.idea
+/.vscode
+*.iml
+
+# Accidental nested project copy (do not analyze/build this)
+/flutter/
+
+# Logs
+*.log

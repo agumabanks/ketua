@@ -1,0 +1,15 @@
+# KETUA — Meet. Vibe. Connect.
+
+Build KETUA as a social entertainment platform where dating is the core, content drives discovery, and monetization rewards creators. People discover personalities, interact through content, build attraction, go on dates, and optionally earn from their audience.
+
+Implement connected features, not visual placeholders. Preserve Google and backend phone authentication, privacy, blocking, moderation, and server-authoritative balances. Use the reference screenshots for dark surfaces, generous rounded cards, bold typography, floating navigation, clear plan selection, Stars, Boosts, Likes and discovery preferences. Keep KETUA's own assets and wording. The KETUA wordmark uses font weight 900; the slogan is exactly “Meet. Vibe. Connect.”. App identity is com.sanyu.ketua on Android and iOS, registered against Firebase ketua-750dc.
+
+Chat: give conversations a subtle default wallpaper and a settings panel with per-account wallpaper choices, mute, block and clear-history controls. Maintain accurate delivery states and retry feedback. Gifts use animated cards showing a name, image and current coin value; confirm spending and enforce the latest value on the server. Administrators can create and edit gift artwork, names and values. Seed a small named catalog without granting fake balances or earnings.
+
+Explore: integrate people, content and experiences. Add Events, Parties and Live events with dates, location, ticket inventory and prices in administrator-configured currencies (initially UGX and USD). Paid ticket issuance requires verified payment; do not issue fake paid tickets. Free tickets must have server-side capacity checks and a private user-owned ticket record. Admin controls publication, prices and capacity. Distinguish in-person experiences from video livestreams.
+
+Discovery: immediate card motion, background saves with honest failure recovery, bounded queues, image caching and no repeated deck entries. The loading view uses the signed-in person's photo/avatar with a heartbeat and expanding radar rings. Respect reduced-motion preferences and avoid continuous expensive effects on profile cards.
+
+Profile: add Earn, creator stats and eligibility guidance, gift history and payout status. Connect values to actual records; do not imply received gifts equal withdrawable funds. Existing redemption controls retain verification and balance checks. Plans, privacy, profile completion and settings remain accessible. Gold is UGX 37,000/month and administrator-editable; never invent Pro or USD prices.
+
+Acceptance: automated checks cover gift validation, blocked transfers, event visibility, ticket ownership/capacity/idempotency, currency validation and honest creator totals. Run Flutter analysis/tests, build the new package, verify fresh Google sign-in and exercise Explore, chat settings, gift cards, profile Earn and swipe on the connected Android device. Supply screenshots and remaining provider/device limitations. Physical iPhone validation and real purchase/payout verification remain separate gates when their prerequisites are available.

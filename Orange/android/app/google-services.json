@@ -1,0 +1,106 @@
+{
+  "project_info": {
+    "project_number": "334020715928",
+    "project_id": "ketua-750dc",
+    "storage_bucket": "ketua-750dc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334020715928:android:2c5f22acda375e634ff7ed",
+        "android_client_info": {
+          "package_name": "com.retrytech.app.ketua"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "334020715928-k5dkpk538inapagmdvj85auplfntbmiv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.retrytech.app.ketua",
+            "certificate_hash": "6e3b8f2f3d684a6339a6ca0c52732ca415f70aa5"
+          }
+        },
+        {
+          "client_id": "334020715928-918758gll7124dev267f03sbl15miusf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCugKYdWpO2atA6BB86uKVA6c4w-YH3Kcc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "334020715928-918758gll7124dev267f03sbl15miusf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "334020715928-cm313kmcbd261kv0vgbq0rs30idggioh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sanyu.ketua"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334020715928:android:faded18c0f8d2e994ff7ed",
+        "android_client_info": {
+          "package_name": "com.sanyu.ketua"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "334020715928-6c28oqajbej2c5esnjngro8oqkbistu9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sanyu.ketua",
+            "certificate_hash": "cd5ec30e06626cf1ceb328dc0adefe9bb8b7665c"
+          }
+        },
+        {
+          "client_id": "334020715928-pdhih0nmu9rjomgf81ohvb5suk6l351u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sanyu.ketua",
+            "certificate_hash": "6e3b8f2f3d684a6339a6ca0c52732ca415f70aa5"
+          }
+        },
+        {
+          "client_id": "334020715928-918758gll7124dev267f03sbl15miusf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCugKYdWpO2atA6BB86uKVA6c4w-YH3Kcc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "334020715928-918758gll7124dev267f03sbl15miusf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "334020715928-cm313kmcbd261kv0vgbq0rs30idggioh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sanyu.ketua"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

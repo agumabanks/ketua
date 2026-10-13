@@ -1,0 +1,22 @@
+# Top-level secrets and large files
+.env
+googleCredentials.json
+Documentation.zip
+orange_backend.zip
+Orange_flutter.zip
+orange_database.sql
+
+# OS artifacts
+.DS_Store
+__MACOSX/
+
+# Project-level ignores are in:
+#   /orange_backend/.gitignore
+#   /Orange/.gitignore
+
+# Old Play Store / release builds (large binaries, not source)
+orange_backend/public/downloads/
+*.aab
+*.apk
+*.so
+*.hprof

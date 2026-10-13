@@ -1,0 +1,3 @@
+<?php
+require __DIR__.'/../vendor/autoload.php';$app=require __DIR__.'/../bootstrap/app.php';$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+foreach(['privacy-policy'=>'Privacy policy','terms-of-use'=>'Terms of use'] as $slug=>$title){$path=__DIR__.'/../_legal/'.($slug==='privacy-policy'?'privacy-policy-draft.html':'terms-of-use-draft.html');$page=App\Models\Pages::where('slug',$slug)->first()??new App\Models\Pages();if($page->exists && $page->is_active){echo "Skipped active $slug; kept published policy intact.\n";continue;}$page->slug=$slug;$page->title=$title;$page->content=file_get_contents($path);$page->is_active=false;$page->save();echo "Updated $slug administrator review draft (unpublished).\n";}

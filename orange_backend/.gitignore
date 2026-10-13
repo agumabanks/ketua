@@ -1,0 +1,52 @@
+# Dependencies
+/vendor
+/node_modules
+/.dart_tool
+/flutter-plugins-dependencies
+
+# Environment and secrets
+.env
+.env.local
+.env.production
+googleCredentials.json
+
+# Build/dist
+/dist
+/build
+/.next
+/.amara
+/.amara_generated
+/soko24-ads
+/amara_generated
+/.flutter-plugins
+
+# Databases and large files
+*.db
+*.sqlite
+*.zip
+*.sql
+
+# Python
+/.venv
+/__pycache__
+/.pytest_cache
+
+# IDE and OS
+.DS_Store
+/.idea
+/.vscode
+*.iml
+*.swp
+*.swo
+
+# Logs
+*.log
+/npm-debug.log*
+/yarn-debug.log*
+/yarn-error.log*
+
+# System
+/Thumbs.db
+
+.env.testing
+.env.live.bak
