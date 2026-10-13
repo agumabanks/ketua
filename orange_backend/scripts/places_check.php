@@ -1,0 +1,32 @@
+<?php
+require __DIR__.'/../vendor/autoload.php';$app=require __DIR__.'/../bootstrap/app.php';$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+use Illuminate\Support\Facades\DB;use Illuminate\Http\Request;use App\Models\Users;
+if(config('database.connections.mysql.database')!=='ketua_test')throw new RuntimeException('Isolated database required');
+$n=0;function ck($v,$msg){global $n;if(!$v)throw new RuntimeException('FAIL '.$msg);$n++;echo "PASS: $msg\n";}
+DB::beginTransaction();try{
+$me=new Users();$me->fullname='Places QA';$me->name='Places QA';$me->username='places_'.bin2hex(random_bytes(5));$me->email=$me->username.'@example.test';$me->password=bcrypt('isolated');$me->identity=$me->username;$me->dob='1995-01-01';$me->is_block=0;$me->save();auth('app_users')->setUser(Users::findOrFail($me->id));
+$c=new App\Http\Controllers\PlaceController();$base=['title'=>'Private QA stay','category'=>'stay','description'=>'Isolated fixture','country'=>'Uganda','district'=>'Wakiso','town'=>'Kira','address'=>'Test venue','latitude'=>.3,'longitude'=>32.6,'currency_code'=>'UGX','price_min'=>10000,'price_max'=>50000,'price_unit'=>'night','includes'=>'Room and breakfast','owner_id'=>999999,'status'=>'approved','published'=>true];
+$id=$c->submit(Request::create('/','POST',$base))->getData(true)['data']['id'];$p=DB::table('place_listings')->find($id);ck($p->owner_id==$me->id&&$p->status==='pending'&&!$p->published,'Member cannot self-approve or choose another owner');
+ck(!collect($c->index(Request::create('/','GET',['category'=>'stay','currency'=>'UGX']))->getData(true)['data'])->contains('id',$id),'Pending listing hidden from Explore');
+DB::table('place_listings')->where('id',$id)->update(['status'=>'approved','published'=>true]);
+ck(collect($c->index(Request::create('/','GET',['category'=>'stay','currency'=>'UGX','budget_min'=>15000,'budget_max'=>30000]))->getData(true)['data'])->contains('id',$id),'Budget range overlap returns approved listing');
+ck(!collect($c->index(Request::create('/','GET',['category'=>'stay','currency'=>'UGX','budget_min'=>60000]))->getData(true)['data'])->contains('id',$id),'Budget excludes unsuitable listing');
+$slots=[];for($i=0;$i<3;$i++)$slots[]=DB::table('place_slots')->insertGetId(['listing_id'=>$id,'starts_at'=>now()->addDays(2+$i)->startOfDay(),'ends_at'=>now()->addDays(3+$i)->startOfDay(),'amount_minor'=>20000,'capacity'=>2,'enabled'=>true,'created_at'=>now(),'updated_at'=>now()]);
+$fresh=$c->slots($id)->getData(true);ck($fresh['listing']['currency_code']==='UGX'&&!isset($fresh['listing']['owner_id']),'Availability supplies fresh public metadata without owner fields');DB::table('place_listings')->where('id',$id)->update(['title'=>'Updated venue title']);ck($c->slots($id)->getData(true)['listing']['title']==='Updated venue title','Opening a saved listing receives current venue details');
+$v=['listing_id'=>$id,'slot_ids'=>[$slots[0],$slots[1]],'quantity'=>1,'request_key'=>(string)Illuminate\Support\Str::uuid(),'total_minor'=>1,'user_id'=>999999];$r=$c->reserve(Request::create('/','POST',$v))->getData(true);$res=$r['data'];ck($res['total_minor']==40000&&$res['status']==='requested','Server quotes exact consecutive nights without inventing confirmation');ck($res['user_id']==$me->id,'Reservation ownership ignores supplied user');
+ck($c->reserve(Request::create('/','POST',$v))->getData(true)['data']['id']==$res['id'],'Reservation retry is idempotent');
+$changed=$v;$changed['quantity']=2;ck($c->reserve(Request::create('/','POST',$changed))->getStatusCode()===409,'Same key cannot alter the reservation');
+$changed['request_key']=(string)Illuminate\Support\Str::uuid();ck($c->reserve(Request::create('/','POST',$changed))->getStatusCode()===409,'Capacity cannot be overbooked');
+$gaps=$v;$gaps['request_key']=(string)Illuminate\Support\Str::uuid();$gaps['slot_ids']=[$slots[0],$slots[2]];ck($c->reserve(Request::create('/','POST',$gaps))->getStatusCode()===422,'AirStay rejects nonconsecutive nights');
+$other=DB::table('place_listings')->insertGetId(array_merge(array_diff_key($base,array_flip(['owner_id','published','status'])),['status'=>'approved','published'=>true,'created_at'=>now(),'updated_at'=>now()]));$foreign=DB::table('place_slots')->insertGetId(['listing_id'=>$other,'starts_at'=>now()->addDays(2),'ends_at'=>now()->addDays(3),'amount_minor'=>100,'capacity'=>1,'enabled'=>true,'created_at'=>now(),'updated_at'=>now()]);$gaps['slot_ids']=[$foreign];ck($c->reserve(Request::create('/','POST',$gaps))->getStatusCode()===422,'Cannot reserve another listing’s slot');
+$c->cancel(Request::create('/','POST',['id'=>$res['id']]));ck(DB::table('place_reservations')->value('status')==='cancelled','Owner cancellation releases capacity');$changed['quantity']=2;ck($c->reserve(Request::create('/','POST',$changed))->getData(true)['status'],'Released capacity can be requested again');
+ck($c->cancel(Request::create('/','POST',['id'=>999999]))->getStatusCode()===404,'Unknown reservation cannot be cancelled');
+ck($c->mine()->getData(true)['data'][0]['owner_id']==$me->id,'Earn shows only owned submissions');
+$bookings=$c->ownerReservations()->getData(true)['data'];ck(count($bookings)===2,'Earner sees own listing bookings');ck(!array_key_exists('user_id',$bookings[0]),'Earner booking history does not expose customer identity');
+ck($c->slots($id)->getData(true)['data'][0]['remaining']===0,'Published slot remaining capacity reflects pending requests');
+$expired=DB::table('place_reservations')->where('status','requested')->value('id');DB::table('place_reservations')->where('id',$expired)->update(['created_at'=>now()->subDays(2)]);ck($c->slots($id)->getData(true)['data'][0]['remaining']===2,'Expired request hold releases capacity');
+ck(collect($c->reservations()->getData(true)['data'])->contains('status','expired'),'Owner sees expired request status');
+$wrong=$base;$wrong['price_unit']='person';try{$c->submit(Request::create('/','POST',$wrong));throw new RuntimeException('Invalid price unit accepted');}catch(Illuminate\Validation\ValidationException $e){ck(true,'Category pricing unit validated');}
+$html=$c->admin()->with('errors',new Illuminate\Support\ViewErrorBag())->render();ck(str_contains($html,'Reservation requests')&&str_contains($html,'Updated venue title'),'Admin listings and requests render');
+echo "RESULT: $n/$n places checks passed\n";
+}finally{DB::rollBack();auth('app_users')->forgetUser();}
